@@ -5,7 +5,7 @@ resource "azurerm_network_security_group" "this" {
   tags                = var.tags
 
   dynamic "security_rule" {
-    for_each = var.enable_inline_rules ? [var.security_rules] : [tomap("")]
+    for_each = var.enable_inline_rules ? var.security_rules : tomap("")
 
     content {
       access                                     = length(var.security_rules) == 0 ? null : security_rule.value.access
