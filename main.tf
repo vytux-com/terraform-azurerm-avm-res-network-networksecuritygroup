@@ -5,26 +5,25 @@ resource "azurerm_network_security_group" "this" {
   tags                = var.tags
 
   dynamic "security_rule" {
-    for_each = var.enable_inline_rules ? var.security_rules : {}
-    #for_each = var.enable_inline_rules == false ? [] : [var.security_rules]
+    for_each = var.enable_inline_rules ? [var.security_rules] : [""]
 
     content {
-      access                                     = security_rule.value.access
-      direction                                  = security_rule.value.direction
-      name                                       = security_rule.value.name
-      priority                                   = security_rule.value.priority
-      protocol                                   = security_rule.value.protocol
-      description                                = security_rule.value.description
-      destination_address_prefix                 = security_rule.value.destination_address_prefix
-      destination_address_prefixes               = security_rule.value.destination_address_prefixes
-      destination_application_security_group_ids = security_rule.value.destination_application_security_group_ids
-      destination_port_range                     = security_rule.value.destination_port_range
-      destination_port_ranges                    = security_rule.value.destination_port_ranges
-      source_address_prefix                      = security_rule.value.source_address_prefix
-      source_address_prefixes                    = security_rule.value.source_address_prefixes
-      source_application_security_group_ids      = security_rule.value.source_application_security_group_ids
-      source_port_range                          = security_rule.value.source_port_range
-      source_port_ranges                         = security_rule.value.source_port_ranges
+      access                                     = length(security_rule.value) == 0 ? null : security_rule.value.access
+      direction                                  = length(security_rule.value) == 0 ? null : security_rule.value.direction
+      name                                       = length(security_rule.value) == 0 ? null : security_rule.value.name
+      priority                                   = length(security_rule.value) == 0 ? null : security_rule.value.priority
+      protocol                                   = length(security_rule.value) == 0 ? null : security_rule.value.protocol
+      description                                = length(security_rule.value) == 0 ? null : security_rule.value.description
+      destination_address_prefix                 = length(security_rule.value) == 0 ? null : security_rule.value.destination_address_prefix
+      destination_address_prefixes               = length(security_rule.value) == 0 ? null : security_rule.value.destination_address_prefixes
+      destination_application_security_group_ids = length(security_rule.value) == 0 ? null : security_rule.value.destination_application_security_group_ids
+      destination_port_range                     = length(security_rule.value) == 0 ? null : security_rule.value.destination_port_range
+      destination_port_ranges                    = length(security_rule.value) == 0 ? null : security_rule.value.destination_port_ranges
+      source_address_prefix                      = length(security_rule.value) == 0 ? null : security_rule.value.source_address_prefix
+      source_address_prefixes                    = length(security_rule.value) == 0 ? null : security_rule.value.source_address_prefixes
+      source_application_security_group_ids      = length(security_rule.value) == 0 ? null : security_rule.value.source_application_security_group_ids
+      source_port_range                          = length(security_rule.value) == 0 ? null : security_rule.value.source_port_range
+      source_port_ranges                         = length(security_rule.value) == 0 ? null : security_rule.value.source_port_ranges
     }
   }
 
