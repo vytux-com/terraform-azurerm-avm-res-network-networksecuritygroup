@@ -4,6 +4,29 @@ resource "azurerm_network_security_group" "this" {
   resource_group_name = var.resource_group_name
   tags                = var.tags
 
+  dynamic "security_rule" {
+    for_each = var.enable_inline_rules == false ? [] : var.security_rules
+
+    content {
+      access                                     = security_rule.value.access
+      direction                                  = security_rule.value.direction
+      name                                       = security_rule.value.name
+      priority                                   = security_rule.value.priority
+      protocol                                   = security_rule.value.protocol
+      description                                = security_rule.value.description
+      destination_address_prefix                 = security_rule.value.destination_address_prefix
+      destination_address_prefixes               = security_rule.value.destination_address_prefixes
+      destination_application_security_group_ids = security_rule.value.destination_application_security_group_ids
+      destination_port_range                     = security_rule.value.destination_port_range
+      destination_port_ranges                    = security_rule.value.destination_port_ranges
+      source_address_prefix                      = security_rule.value.source_address_prefix
+      source_address_prefixes                    = security_rule.value.source_address_prefixes
+      source_application_security_group_ids      = security_rule.value.source_application_security_group_ids
+      source_port_range                          = security_rule.value.source_port_range
+      source_port_ranges                         = security_rule.value.source_port_ranges
+    }
+  }
+
   dynamic "timeouts" {
     for_each = var.timeouts == null ? [] : [var.timeouts]
 
