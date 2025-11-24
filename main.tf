@@ -5,7 +5,8 @@ resource "azurerm_network_security_group" "this" {
   tags                = var.tags
 
   dynamic "security_rule" {
-    for_each = var.enable_inline_rules == false ? [] : [var.security_rules]
+    for_each = var.enable_inline_rules ? var.security_rules : {}
+    #for_each = var.enable_inline_rules == false ? [] : [var.security_rules]
 
     content {
       access                                     = security_rule.value.access
