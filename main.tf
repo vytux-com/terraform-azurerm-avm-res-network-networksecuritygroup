@@ -1,5 +1,5 @@
 locals {
-  inline_rules = var.enable_inline_rules ? [for rule in var.security_rules : merge(
+  inline_rules = var.enable_inline_rules == true ? [for rule in var.security_rules : merge(
     {
       access                                     = null
       direction                                  = null
