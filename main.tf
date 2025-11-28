@@ -1,31 +1,33 @@
+locals {
+  inline_rules = var.enable_inline_rules ? [for rule in var.security_rules : merge(
+    {
+      access                                     = null
+      direction                                  = null
+      name                                       = null
+      priority                                   = null
+      protocol                                   = null
+      description                                = null
+      destination_address_prefix                 = null
+      destination_address_prefixes               = null
+      destination_application_security_group_ids = null
+      destination_port_range                     = null
+      destination_port_ranges                    = null
+      source_address_prefix                      = null
+      source_address_prefixes                    = null
+      source_application_security_group_ids      = null
+      source_port_range                          = null
+      source_port_ranges                         = null
+    }, rule
+  )] : null
+}
+
 resource "azurerm_network_security_group" "this" {
   location            = var.location
   name                = var.name
   resource_group_name = var.resource_group_name
   tags                = var.tags
 
-  dynamic "security_rule" {
-    for_each = var.enable_inline_rules ? var.security_rules : tomap("")
-
-    content {
-      access                                     = length(var.security_rules) == 0 ? null : security_rule.value.access
-      direction                                  = length(var.security_rules) == 0 ? null : security_rule.value.direction
-      name                                       = length(var.security_rules) == 0 ? null : security_rule.value.name
-      priority                                   = length(var.security_rules) == 0 ? null : security_rule.value.priority
-      protocol                                   = length(var.security_rules) == 0 ? null : security_rule.value.protocol
-      description                                = length(var.security_rules) == 0 ? null : security_rule.value.description
-      destination_address_prefix                 = length(var.security_rules) == 0 ? null : security_rule.value.destination_address_prefix
-      destination_address_prefixes               = length(var.security_rules) == 0 ? null : security_rule.value.destination_address_prefixes
-      destination_application_security_group_ids = length(var.security_rules) == 0 ? null : security_rule.value.destination_application_security_group_ids
-      destination_port_range                     = length(var.security_rules) == 0 ? null : security_rule.value.destination_port_range
-      destination_port_ranges                    = length(var.security_rules) == 0 ? null : security_rule.value.destination_port_ranges
-      source_address_prefix                      = length(var.security_rules) == 0 ? null : security_rule.value.source_address_prefix
-      source_address_prefixes                    = length(var.security_rules) == 0 ? null : security_rule.value.source_address_prefixes
-      source_application_security_group_ids      = length(var.security_rules) == 0 ? null : security_rule.value.source_application_security_group_ids
-      source_port_range                          = length(var.security_rules) == 0 ? null : security_rule.value.source_port_range
-      source_port_ranges                         = length(var.security_rules) == 0 ? null : security_rule.value.source_port_ranges
-    }
-  }
+  security_rule = local.inline_rules
 
   dynamic "timeouts" {
     for_each = var.timeouts == null ? [] : [var.timeouts]
